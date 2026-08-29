@@ -1,0 +1,189 @@
+{
+  "app_name": "EyeGuard",
+  "personality": "1 iOS-Native Clean",
+  "personality_one_liner": "A trustworthy, clean, and unobtrusive health companion that protects your eyes while seamlessly integrating into daily mobile usage.",
+  "color": {
+    "surface": "#F7F7F6",
+    "onSurface": "#1A1C1A",
+    "surfaceSecondary": "#FFFFFF",
+    "onSurfaceSecondary": "#1A1C1A",
+    "surfaceTertiary": "#EAEAE8",
+    "onSurfaceTertiary": "#4A4D4A",
+    "surfaceInverse": "#2C302C",
+    "onSurfaceInverse": "#F7F7F6",
+    "brand": "#5E8166",
+    "brandPrimary": "#5E8166",
+    "onBrandPrimary": "#FFFFFF",
+    "brandSecondary": "#A3BCA7",
+    "onBrandSecondary": "#1A1C1A",
+    "brandTertiary": "#D1DFD4",
+    "onBrandTertiary": "#2E4233",
+    "success": "#4A7A59",
+    "onSuccess": "#FFFFFF",
+    "warning": "#E59A54",
+    "onWarning": "#1A1C1A",
+    "error": "#C95D5D",
+    "onError": "#FFFFFF",
+    "info": "#4A707A",
+    "onInfo": "#FFFFFF",
+    "border": "#E5E5E3",
+    "borderStrong": "#C2C2C0",
+    "divider": "#EAEAE8"
+  },
+  "typography": {
+    "displayFontFamily": "Plus Jakarta Sans",
+    "textFontFamily": "Geist",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Generous vertical breathing room. Cards should never be flush to the screen edge; always use md or lg margin. Group related elements tightly and separate groups with larger spacing.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 12,
+    "lg": 20,
+    "pill": 999
+  },
+  "shadow_tier": "1",
+  "navigation": "bottom_tabs",
+  "icon_set": "Ionicons",
+  "glassmorphism": {
+    "enabled": true,
+    "do's": [
+      "Bottom tab bar",
+      "Sticky headers over scrolling content",
+      "The too-close warning modal overlay (heavily blurred and tinted)",
+      "Floating distance indicator badge"
+    ],
+    "dont's": [
+      "Form fields",
+      "List rows",
+      "Standard buttons"
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Onboarding",
+      "purpose": "Educate the user about eye strain and set up camera permissions and base distance.",
+      "states": {
+        "loading": "Centered spinner",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Full-bleed imagery at the top with a gradient scrim (top-to-bottom) blending into the surface color. Bottom 40% contains a large display title, descriptive text, and a sticky primary CTA at the bottom."
+    },
+    {
+      "name": "Home Dashboard",
+      "purpose": "Provide a quick overview of today's eye-protection stats and quick links to apps/videos.",
+      "states": {
+        "loading": "Skeleton loaders for stats cards",
+        "empty": "Empty state illustration if no usage logged",
+        "error": "Error message if stats fail to load"
+      },
+      "layout": "Header with greeting. Top section: Large summary card showing 'Active Protection' status and a daily goal ring. Middle section: 'Quick Links' grid (2-col or 4-col icon grid) for YouTube, Facebook, Instagram, Twitter, and Local Player. Bottom section: A horizontal scroll or list of recent streaks/achievements. Sticky bottom tab bar (glass)."
+    },
+    {
+      "name": "Web/Video Player",
+      "purpose": "In-app browser or local video player wrapped with distance monitoring.",
+      "states": {
+        "loading": "Progress bar for WebView or spinner for video buffer",
+        "empty": "N/A",
+        "error": "Failed to load URL error with retry button"
+      },
+      "layout": "Full screen content (WebView or Video). A small, floating glass badge at the top safe area indicating 'Protection Active'. When distance is too close, a full-screen absolute overlay with heavy blur and a warning message fades in over this screen."
+    },
+    {
+      "name": "Stats",
+      "purpose": "Show weekly charts, close-time counts, and streaks.",
+      "states": {
+        "loading": "Skeleton charts",
+        "empty": "No data illustration 'Start using EyeGuard to see stats'",
+        "error": "Retry loading stats"
+      },
+      "layout": "ScrollView. Segmented control at the top (Day/Week). Main chart card showing screen distance trends. Below: Cards detailing 'Times too close' and 'Current Streak'. Use surfaceSecondary for cards with md margin."
+    },
+    {
+      "name": "Settings & Child Mode",
+      "purpose": "Configure distance range slider, alert preferences, and manage Child Mode PIN.",
+      "states": {
+        "loading": "Spinner",
+        "empty": "N/A",
+        "error": "Toast on save failure"
+      },
+      "layout": "List-based settings layout. Tonal icon containers on the left of each row. The distance range slider (15-60cm) is prominently displayed in a card. A distinct section for 'Child Mode' with a toggle and PIN setup button."
+    },
+    {
+      "name": "Child Mode Dashboard",
+      "purpose": "A simplified, locked-down version of the Home Dashboard for kids.",
+      "states": {
+        "loading": "Spinner",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "No bottom tabs. Large, chunky icons for approved apps only. A persistent 'Exit' button at the top right that requires a PIN (Parental Gate). The distance warning is more playful but strict."
+    }
+  ],
+  "images": {
+    "youtube_logo": {
+      "url": "https://images.unsplash.com/photo-1649180543887-158357417159?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHx5b3V0dWJlJTIwbG9nbyUyMHRyYW5zcGFyZW50fGVufDB8fHx8MTc4NjQ0Nzg0Nnww&ixlib=rb-4.1.0&q=85",
+      "alt": "YouTube"
+    },
+    "facebook_logo": {
+      "url": "https://images.unsplash.com/photo-1662070479020-73f77887c87c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxmYWNlYm9vayUyMGxvZ28lMjB0cmFuc3BhcmVudHxlbnwwfHx8fDE3ODY0NDc4NDZ8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Facebook"
+    },
+    "instagram_logo": {
+      "url": "https://images.pexels.com/photos/20716655/pexels-photo-20716655.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Instagram"
+    },
+    "twitter_logo": {
+      "url": "https://images.unsplash.com/photo-1705904506582-6552c35a2dc4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwxfHx4JTIwdHdpdHRlciUyMGxvZ28lMjB0cmFuc3BhcmVudHxlbnwwfHx8fDE3ODY0NDc4NDZ8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "X Twitter"
+    },
+    "child_mode_hero": {
+      "url": "https://images.unsplash.com/photo-1525829528215-ffae12a76ac8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAxODF8MHwxfHNlYXJjaHwxfHxjaGlsZCUyMHRhYmxldCUyMGhhcHB5JTIwcGhvdG98ZW58MHx8fHwxNzg2NDQ3ODQ2fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Child using tablet safely"
+    }
+  },
+  "haptics": {
+    "toggle_switch": "impactLight",
+    "distance_warning": "notificationError",
+    "slider_tick": "selection",
+    "quick_link_tap": "impactMedium",
+    "pin_entry": "impactLight"
+  },
+  "instructions_to_main_agent": [
+    "Use 'iOS-Native Clean' guidelines. The UI should be highly legible, spacious, and utilitarian but warm (using the Sage Green brand color).",
+    "For the 'Too Close' distance warning, implement an absolute positioned full-screen modal using 'expo-blur'. It must completely obscure the content beneath it to protect the eyes, pausing any playing video/audio if possible.",
+    "The Home Dashboard should use a 2-col or 4-col compact grid for the 'Quick Links' (WebView shortcuts) to keep them highly accessible without cluttering the screen.",
+    "Child Mode requires a dual-interface architecture. When enabled, replace the main navigation with a simplified locked-down screen that removes stats/settings and only shows approved apps, secured by a PIN gate.",
+    "Use 'react-native-webview' for the in-app social media browsing so the distance monitoring overlay can reliably render over the content.",
+    "Ensure the front-camera distance monitoring logic runs efficiently and uses haptics (notificationError) + sound when the threshold is breached.",
+    "Include a horizontal slider component for distance configuration (15-60cm) with 5cm step snaps, utilizing 'selection' haptics on each tick."
+  ]
+}
