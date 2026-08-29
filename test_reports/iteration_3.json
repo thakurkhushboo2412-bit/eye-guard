@@ -1,0 +1,39 @@
+{
+  "summary": "EyeGuard iteration 3 (Stripe subscription + owner-controlled Paid Mode + Sponsor/Interstitial ad monetization + 16-language i18n). Backend: 28/28 pytest passed - all Pro/Admin/Checkout/Stats/Settings + NEW Ads endpoints (GET/PUT /api/ads/sponsor with admin-gated PUT, POST /api/ads/impression, POST /api/ads/click, GET /api/ads/stats with correct math ctr + estimated_earnings=impressions/1000*2.0+clicks*0.05). Frontend fully verified end-to-end on mobile viewport (390x844): (1) Owner panel entry - 5-tap on Settings title opens /admin, unlock with 142536 works, paid-mode-toggle + sponsor-toggle + Ad Earnings tile (impressions/clicks/CTR/est. earnings) + sponsor form (title/subtitle/image_url/link/save) all present. (2) Sponsor saved via UI persists via GET /api/ads/sponsor. (3) Interstitial flow: tapping Home YouTube quick-link routes to /interstitial?url=..., full-screen sponsored ad renders with image, 'Sponsored' tag, 5s skip countdown, then Skip/Continue button navigates to /viewer with sponsor banner at bottom. Impression counter incremented on backend. (4) Paid Mode ON: Stats tab shows lock overlay with 'Stats are a Pro feature' + Unlock Pro button that opens /paywall. Paywall renders plan-yearly ($14.99, BEST VALUE selected by default), plan-monthly ($1.99), subscribe-btn. Settings shows 'Upgrade to Pro' pro-upsell card. (5) Paid Mode OFF: Settings shows 'All features unlocked' + no lock on Stats. (6) i18n: /language screen lists exactly 16 languages via [data-testid^='lang-'], selecting Hindi changes tab labels (होम/ब्राउज़/आँकड़े/सेटिंग), Settings title (सेटिंग), persists after page reload, and switching back to English works. Sponsor + paid mode reset to OFF at end so default UX is free.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "props.pointerEvents deprecation", "issue": "Non-blocking console warning: 'props.pointerEvents is deprecated. Use style.pointerEvents' — originates from a third-party lib (BlurView / LinearGradient / expo-router). Same as iteration_2; upstream migration pending."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_eyeguard_api.py",
+    "/app/backend/tests/test_ads_and_sponsor.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Nothing critical. Optional: in /app/frontend/app/interstitial.tsx the api.adImpression() useEffect fires once per mount, but React strict-mode / hot-reload in web preview may double-fire it in dev; you can guard with a ref to make impression tracking strictly once-per-mount if that matters for reporting.",
+    "Optional (already noted in iteration_2): investigate library source of 'props.pointerEvents is deprecated' warning."
+  ],
+  "critical_code_review_comments": [
+    "server.py get_sponsor rebuilds a Sponsor by iterating Sponsor.model_fields — works with pydantic v2; keep in mind field-defaults leak if a new field is added.",
+    "ads_config document holds both 'sponsor' and 'metrics' shapes keyed by _id; safe but note the collection is polymorphic.",
+    "Sponsor PUT uses partial merge via {exclude_unset=True} which is correct; no code needed to change.",
+    "Consider rate-limiting /api/ads/impression + /api/ads/click since they are unauthenticated public endpoints (could be inflated). Currently acceptable for MVP but worth noting for production."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ads_and_sponsor.py (new, 7 tests for GET/PUT sponsor, admin-gate, impression/click counters, stats math + auth)"
+  ],
+  "success_rate": {"backend": "100% (28/28)", "frontend": "100% (all critical flows verified: admin, sponsor CRUD, interstitial, paid-mode lock, paywall, 16-lang switch + persistence)"},
+  "seed_data_creation": "One sponsor doc written & then reset to disabled/empty. Impression/click counters incremented by test runs (not reset). Paid mode reset to OFF at completion. No PII / user data created.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Admin code=142536. Ads state in db.ads_config (_id='sponsor' + _id='metrics'). Pro config in db.pro_config. Payments in db.payment_transactions. Default paid_mode=OFF -> is_pro=true universally. Impression/click counters are cumulative & not reset between test runs; use delta assertions. Sponsor is enabled/disabled through /api/ads/sponsor with code+enabled body. AdMob real ads are native-build-only and correctly no-op in web preview (verified via src/ads/impl.web.tsx). i18n uses AsyncStorage-backed key 'eyeguard.lang'; 16 languages hardcoded in /app/frontend/src/i18n/translations.ts.",
+  "rca_of_issue": "N/A — no bugs found."
+}

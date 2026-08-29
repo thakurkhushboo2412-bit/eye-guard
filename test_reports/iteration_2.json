@@ -1,0 +1,37 @@
+{
+  "summary": "EyeGuard iteration 2 (Pro subscription + owner-controlled paid mode). Backend: 21/21 pytest cases passed (all Pro/Admin/Checkout + regression Settings/PIN/Stats). Frontend: verified hidden admin entry (5-tap on Settings title), admin unlock with 142536, paid-mode toggle switches state, /pro/status reflects change instantly, pro-upsell card appears on Settings when paid mode ON & not pro, Stats tab shows stats-lock overlay + stats-unlock-btn navigates to /paywall, paywall renders plan-yearly/plan-monthly with correct prices ($14.99/$1.99), subscribe-btn creates a real Stripe checkout session (opened in new tab to checkout.stripe.com) and shows 'Verifying payment…' status polling, Child Mode toggle when paid mode ON & not pro correctly redirects to /paywall instead of enabling. Client-supplied amount is ignored server-side (Pydantic strips extras). Wrong admin code returns 403 for both /admin/config and /admin/paid-mode. Unknown checkout session returns 404. Paid mode reset to OFF at end so default UX is free.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "props.pointerEvents deprecation", "issue": "Console warning: 'props.pointerEvents is deprecated. Use style.pointerEvents' — likely from a third-party component (BlurView / LinearGradient / expo-router). Non-blocking but should be tracked. Reference: browser console during app load."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_eyeguard_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Nothing critical. Optional: investigate source of 'props.pointerEvents is deprecated' warning; likely originating from a library, migrate when upstream fix is available.",
+    "Optional hardening: reject unknown fields in CheckoutBody with extra='forbid' if you want stricter API surface (currently amount is silently ignored, which is safe but permissive)."
+  ],
+  "critical_code_review_comments": [
+    "server.py: /admin/config uses query-string code — acceptable but consider POST/body for admin secrets to avoid URL logging.",
+    "get_active_pass sorts by paid_at desc but transactions may have paid_at=None for pending; the status:'paid' filter guards this correctly.",
+    "checkout/status uses external Stripe call each poll — fine for now, cached once paid."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_eyeguard_api.py (added 11 new tests for Pro/Admin/Checkout)"
+  ],
+  "success_rate": {"backend": "100% (21/21)", "frontend": "100% (all critical flows verified)"},
+  "seed_data_creation": "None. Two Stripe test checkout sessions were created during testing (status=pending/created); paid_mode was reset to OFF at completion.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Admin code=142536, admin toggle stored in db.pro_config. Payments in db.payment_transactions. Paid mode default OFF -> is_pro=true universally. To test locked UI, first PUT /api/admin/paid-mode {code, enabled:true}, then reset to false. Stripe checkout completion cannot be automated end-to-end; verify only session creation + status polling.",
+  "rca_of_issue": "N/A — no bugs found."
+}
